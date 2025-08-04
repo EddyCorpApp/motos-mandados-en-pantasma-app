@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Motos Mandados en Pantasma PRO</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #007BFF;
+      --primary-hover: #0056b3;
+      --secondary-color: #6c757d;
+      --accent-color: #007BFF;
+      --background-main: #f4f7fc;
+      --background-sidebar: #ffffff;
+      --background-card: #ffffff;
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --border-color: #e9ecef;
+      --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.05);
+      --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .dark {
+      --primary-color: #00EAD9;
+      --primary-hover: #00c4b3;
+      --secondary-color: #495057;
+      --accent-color: #00EAD9;
+      --background-main: #121826;
+      --background-sidebar: #1a2233;
+      --background-card: #1c2536;
+      --text-primary: #e9ecef;
+      --text-secondary: #adb5bd;
+      --border-color: #343a40;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', 'Segoe UI', Tahoma, sans-serif;
+      background-color: var(--background-main);
+      color: var(--text-primary);
+      line-height: 1.6;
+      transition: background-color .3s, color .3s;
+      overflow-x: hidden;
+    }
+
+    #menuBtn {
+      font-size: 24px;
+      cursor: pointer;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1030;
+      background-color: var(--background-card);
+      color: var(--primary-color);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      box-shadow: var(--shadow-medium);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-color);
+      transition: all .3s ease;
+    }
+    #menuBtn:hover {
+      background-color: var(--primary-color);
+      color: var(--background-sidebar);
+      transform: translateY(-2px) scale(1.05);
+    }
+
+    .sidebar {
+      height: 100vh;
+      width: 260px;
+      position: fixed;
+      top: 0;
+      left: -260px;
+      background-color: var(--background-sidebar);
+      overflow-y: auto;
+      z-index: 1020;
+      padding-top: 90px;
+      box-shadow: var(--shadow-medium);
+      transition: left .4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border-right: 1px solid var(--border-color);
+    }
+    .sidebar.open { left: 0; }
+
+    .sidebar-header {
+      text-align: center;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 20px;
+      padding: 0 15px;
+    }
+    .sidebar-header img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+      box-shadow: 0 0 0 4px var(--background-sidebar), 0 0 0 6px var(--primary-color);
+      object-fit: cover;
+    }
+    #nombrePerfil {
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar a {
+      padding: 15px 30px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all .2s;
+      border-left: 4px solid transparent;
+    }
+    .sidebar a:hover {
+      background-color: var(--background-main);
+      color: var(--primary-color);
+      border-left-color: var(--primary-color);
+    }
+    .sidebar a.active {
+      color: var(--primary-color);
+      font-weight: 600;
+      background-color: var(--background-main);
+      border-left-color: var(--primary-color);
+    }
+    
+    .sidebar a .menu-icon {
+      font-size: 20px;
+      transition: transform .3s ease, color .3s ease;
+    }
+    .sidebar a:hover .menu-icon {
+      color: var(--primary-color);
+      transform: scale(1.15) rotate(5deg);
+    }
+
+    .sidebar .closebtn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 28px;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .content {
+      padding: 90px 25px 40px 25px;
+      margin-left: 0;
+      transition: margin-left .4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      min-height: 100vh;
+    }
+    .content.shift { margin-left: 260px; }
+
+    .hidden { display: none; }
+
+    .card {
+      background-color: var(--background-card);
+      color: var(--text-primary);
+      border-radius: 16px;
+      padding: 25px;
+      margin: 20px 0;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border-color);
+      transition: transform .2s ease-out, box-shadow .2s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-medium);
+    }
+    .card h3 {
+        margin-top: 0;
+        color: var(--text-primary);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .card h3 i {
+        color: var(--primary-color);
+    }
+
+    .favorito {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 28px;
+      transition: color .2s, transform .2s;
+    }
+    .favorito:hover {
+      transform: scale(1.15);
+    }
+    .favorito.active {
+      color: #ffc107;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1090;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+    }
+    .modal-content {
+      background-color: var(--background-card);
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 90vw;
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      color: var(--text-primary);
+      animation: modalPop .3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border: 1px solid var(--border-color);
+    }
+    .close-modal {
+      color: var(--text-secondary);
+      float: right;
+      font-size: 32px;
+      font-weight: bold;
+      cursor: pointer;
+      position: absolute;
+      top: 15px;
+      right: 25px;
+    }
+    @keyframes modalPop {
+      from { transform: scale(.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .header-icons {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1040;
+      display: flex;
+      gap: 10px;
+      background-color: var(--background-card);
+      padding: 5px 10px;
+      border-radius: 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border-color);
+    }
+    .header-icons a {
+      color: var(--text-secondary);
+      font-size: 22px;
+      transition: all .2s;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .header-icons a:hover {
+      color: var(--primary-color);
+      background-color: var(--background-main);
+      transform: translateY(-2px);
+    }
+
+    #fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1200;
+      background-color: var(--primary-color);
+      color: #fff;
+      font-size: 28px;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      box-shadow: 0 8px 25px color-mix(in srgb, var(--primary-color) 40%, transparent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all .3s ease;
+    }
+    .dark #fab { color: #121826; }
+    #fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 30px color-mix(in srgb, var(--primary-color) 50%, transparent);
+    }
+    #fabMenu {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      z-index: 1200;
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      align-items: flex-end;
+    }
+    .fab-item {
+      background-color: var(--background-card);
+      color: var(--primary-color);
+      font-size: 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 30px;
+      padding: 12px 20px;
+      box-shadow: var(--shadow-medium);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-weight: 500;
+      animation: modalPop .2s;
+      transition: all .2s ease;
+    }
+    .fab-item:hover {
+        background-color: var(--primary-color);
+        color: var(--background-card);
+        transform: translateX(-5px);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 28px;
+    }
+    .section-header i {
+      font-size: 32px;
+      color: var(--primary-color);
+    }
+
+    #saludo-container {
+      font-size: 26px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #saludo-container i {
+        font-size: 32px;
+        color: var(--primary-color);
+    }
+    #saludo-container span {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      font-size: 15px;
+      padding: 12px 25px;
+      border-radius: 30px;
+      z-index: 1300;
+      box-shadow: var(--shadow-medium);
+      animation: toastin .4s;
+    }
+    .dark .toast {
+        background-color: var(--text-primary);
+        color: var(--background-main);
+    }
+    @keyframes toastin {
+      from { opacity: 0; transform: translate(-50%, 20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background-color: var(--background-main);
+      color: var(--text-primary);
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      transition: border-color .2s, box-shadow .2s;
+      box-sizing: border-box;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent);
+    }
+
+    button, .button {
+      cursor: pointer;
+      background-color: var(--primary-color);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 8px;
+      border: none;
+      padding: 12px 25px;
+      transition: all .2s ease;
+      font-family: 'Poppins', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .dark button { color: #121826; }
+    button:hover, .button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+    }
+    button.secondary {
+        background-color: var(--background-card);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+    }
+    button.secondary:hover {
+        background-color: var(--background-main);
+        color: var(--text-primary);
+    }
+    
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    .dashboard-card {
+        background-color: var(--background-card);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--border-color);
+    }
+    .dashboard-card h4 {
+        margin: 0 0 15px 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .dashboard-card h4 i {
+        color: var(--primary-color);
+    }
+    .stat-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .stat-item:last-child {
+        border-bottom: none;
+    }
+    .stat-item span:last-child {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    .quick-action-card {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .quick-action-card button {
+        width: 100%;
+        padding: 15px;
+        font-size: 16px;
+    }
+    .list-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: background-color 0.2s, border-color 0.2s;
+    }
+    .list-item:hover {
+        background-color: var(--background-main);
+        border-color: var(--border-color);
+    }
+    .list-item img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    #randomMotoCard {
+      position: fixed;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2000;
+      width: 90vw;
+      max-width: 400px;
+      display: none;
+      animation: modalPop 0.4s;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .content.shift { margin-left: 0; }
+      .sidebar { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header-icons">
+    <a href="#" onclick="toggleDarkMode()" title="Modo Oscuro/Claro"><i class="ri-moon-line"></i></a>
+    <a href="http://action_share" title="Compartir"><i class="ri-share-line"></i></a>
+    <a href="http://action_notifications" title="Notificaciones"><i class="ri-notification-3-line"></i></a>
+  </div>
+  <div id="menuBtn" onclick="toggleSidebar()"><i class="ri-menu-2-line"></i></div>
+  <div id="fab" onclick="abrirFabMenu()"><i class="ri-compass-3-line"></i></div>
+  <div id="fabMenu">
+    <button class="fab-item" onclick="mostrarSeccion('motos');cerrarFabMenu();"><i class="ri-search-line"></i> Buscar Motos</button>
+    <button class="fab-item" onclick="mostrarSeccion('favoritos');cerrarFabMenu();"><i class="ri-star-line"></i> Ver Favoritos</button>
+    <button class="fab-item" onclick="mostrarSeccion('agregar');cerrarFabMenu();"><i class="ri-add-circle-line"></i> Sugerir Moto</button>
+    <button class="fab-item" onclick="mostrarAyuda();cerrarFabMenu();"><i class="ri-question-line"></i> Ayuda</button>
+  </div>
+  
+  <div id="randomMotoCard" class="card"></div>
+
+  <aside id="mySidebar" class="sidebar">
+    <div class="sidebar-header">
+      <img id="logoPerfil" src="https://i.ibb.co/VQjkXT9/default-moto.png" onerror="this.onerror=null;this.src='https://i.pinimg.com/736x/f2/a3/1d/f2a31d6128895897f7960de95bed8596.jpg';" alt="Perfil">
+      <div id="nombrePerfil">Usuario PRO</div>
+    </div>
+    <span class="closebtn" onclick="toggleSidebar()">×</span>
+    <nav>
+      <a href="#" onclick="mostrarSeccion('inicio')" id="sb_inicio"><i class="ri-dashboard-line menu-icon"></i> Panel Principal</a>
+      <a href="#" onclick="mostrarSeccion('motos')" id="sb_motos"><i class="ri-motorbike-line menu-icon"></i> Motos</a>
+      <a href="#" onclick="mostrarSeccion('favoritos')" id="sb_favoritos"><i class="ri-star-line menu-icon"></i> Favoritos</a>
+      <a href="#" onclick="mostrarSeccion('estadisticas')" id="sb_estadisticas"><i class="ri-bar-chart-2-line menu-icon"></i> Estadísticas</a>
+      <a href="#" onclick="mostrarSeccion('agregar')" id="sb_agregar"><i class="ri-add-circle-line menu-icon"></i> Agregar</a>
+      <a href="#" onclick="mostrarSeccion('historial')" id="sb_historial"><i class="ri-history-line menu-icon"></i> Historial</a>
+      <a href="#" onclick="mostrarSeccion('ajustes')" id="sb_ajustes"><i class="ri-settings-4-line menu-icon"></i> Ajustes</a>
+      <a href="#" onclick="mostrarSeccion('creditos')" id="sb_creditos"><i class="ri-information-line menu-icon"></i> Créditos</a>
+      <a href="https://play.google.com/store/apps/dev?id=6853476055976776479" target="_blank"><i class="ri-google-play-line menu-icon"></i> Más Apps Aquí</a>
+      <a href="https://www.e-droid.net/privacy.php?ida=3465696&idl=es" target="_blank"><i class="ri-lock-2-line menu-icon"></i> Políticas de Privacidad</a>
+    </nav>
+  </aside>
+
+  <main class="content" id="mainContent">
+    <section id="inicio">
+      <div id="saludo-container"></div>
+      <div class="section-header" style="margin-bottom: 25px;">
+        <h2>Panel de Control</h2>
+      </div>
+      <div class="dashboard-grid">
+        <div class="dashboard-card" id="dashboard-stats"></div>
+        <div class="dashboard-card quick-action-card">
+            <h4><i class="ri-flashlight-line"></i> Acciones Rápidas</h4>
+            <button onclick="mostrarSeccion('motos')"><i class="ri-motorbike-line"></i> Ver Todas las Motos</button>
+            <button class="secondary" onclick="mostrarSeccion('agregar')"><i class="ri-add-circle-line"></i> Sugerir una Moto</button>
+        </div>
+        <div class="dashboard-card" id="dashboard-favorites"></div>
+        <div class="dashboard-card" id="dashboard-history"></div>
+      </div>
+    </section>
+
+    <section id="motos" class="hidden">
+      <div class="section-header">
+        <i class="ri-motorbike-line"></i>
+        <h2>Motos Disponibles</h2>
+      </div>
+       <div style="display:flex;gap:10px;flex-wrap:wrap; margin-bottom: 20px;">
+        <select id="filtroServicio" onchange="filtrarPorServicio()" style="flex-grow:1; min-width: 150px;"></select>
+        <input type="text" id="motoSearch" placeholder="Buscar por nombre, servicio..." onkeyup="buscarAvanzado()" style="flex-grow:2; min-width: 200px;">
+        <button onclick="filtrarSoloFavoritos()" class="secondary" style="flex-grow:1; min-width: 150px;"><i class="ri-star-line"></i> Solo Favoritos</button>
+      </div>
+      <div id="listaMotos"></div>
+    </section>
+    
+    <section id="favoritos" class="hidden">
+        <div class="section-header">
+            <i class="ri-star-line"></i>
+            <h2>Mis Favoritos</h2>
+        </div>
+        <div id="listaFavoritos"></div>
+    </section>
+
+    <section id="estadisticas" class="hidden">
+      <div class="section-header">
+        <i class="ri-bar-chart-2-line"></i>
+        <h2>Estadísticas Detalladas</h2>
+      </div>
+      <div id="estadisticasPRO"></div>
+    </section>
+
+    <section id="agregar" class="hidden">
+      <div class="section-header">
+        <i class="ri-add-circle-line"></i>
+        <h2>Sugerir una Moto</h2>
+      </div>
+       <p style="color: var(--text-secondary);">¿Conoces a un moto mandado que debería estar en la app? Envíanos la información por WhatsApp para que nuestro equipo la verifique.</p>
+      <input type="text" id="nombreMoto" placeholder="Nombre del Moto Mandado">
+      <input type="text" id="numeroMoto" placeholder="Número de WhatsApp del Moto">
+      <textarea id="serviciosMoto" placeholder="Servicios que ofrece (ej: Compras, Viajes, etc.)"></textarea>
+      <button onclick="enviarMotoDirecto()"><i class="ri-send-plane-2-line"></i> Enviar Sugerencia</button>
+    </section>
+
+    <section id="historial" class="hidden">
+      <div class="section-header">
+        <i class="ri-history-line"></i>
+        <h2>Historial de Pedidos Completo</h2>
+      </div>
+      <div id="listaHistorial"></div>
+      <div style="margin-top:20px; display:flex; gap:10px;">
+          <button onclick="exportarHistorial()"><i class="ri-share-line"></i> Compartir</button>
+          <button onclick="limpiarHistorial()" class="secondary" style="background-color: #dc3545; color: #fff;"><i class="ri-delete-bin-2-line"></i> Limpiar</button>
+      </div>
+    </section>
+
+    <section id="ajustes" class="hidden">
+      <div class="section-header">
+        <i class="ri-settings-4-line"></i>
+        <h2>Ajustes de Perfil</h2>
+      </div>
+      <input type="text" id="nombre" placeholder="Tu Nombre">
+      <input type="text" id="apellido" placeholder="Tu Apellido">
+      <label for="fotoPerfilInput">Foto de Perfil:</label>
+      <input type="file" id="fotoPerfilInput" accept="image/*">
+      <label for="colorFondo">Color de Acento:</label>
+      <input type="color" id="colorFondo" onchange="cambiarFondo()">
+      <label for="fuente">Tipo de Letra:</label>
+      <select id="fuente" onchange="cambiarFuente()">
+        <option value="Poppins">Poppins</option>
+        <option value="Segoe UI">Segoe UI</option>
+        <option value="Arial">Arial</option>
+        <option value="Verdana">Verdana</option>
+      </select>
+      <button onclick="guardarPerfil()"><i class="ri-save-3-line"></i> Guardar Perfil</button>
+    </section>
+
+    <section id="creditos" class="hidden">
+        <div class="section-header">
+            <i class="ri-information-line"></i>
+            <h2>Créditos</h2>
+        </div>
+        <div class="card">
+            <p><b>Desarrollado por:</b> Corp Apps</p>
+            <p><b>Visión:</b> Esta aplicación fue diseñada para modernizar y facilitar el servicio de motos mandados en Pantasma, creando un puente de confianza entre los usuarios y los proveedores de servicio.</p>
+            <p><b>Agradecimientos:</b> A nuestros usuarios, socios, y a todos los motos mandados que trabajan día a día por un mejor servicio. Su apoyo es el motor de este proyecto.</p>
+            <p>© 2025 Corp Apps. Todos los derechos reservados.</p>
+        </div>
+    </section>
+  </main>
+  
+  <div id="modalPedido" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal()">×</span>
+      <div class="section-header">
+        <i class="ri-clipboard-line"></i>
+        <h2>Realizar Pedido</h2>
+      </div>
+      <input type="text" id="pedidoNombre" placeholder="Tu Nombre">
+      <input type="text" id="pedidoApellido" placeholder="Tu Apellido">
+      <input type="text" id="pedidoQue" placeholder="¿Qué necesitas que te lleven?">
+      <select id="pedidoDondeComprar">
+        <option value="" disabled selected>- Selecciona el negocio de compra -</option>
+      </select>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <input type="text" id="pedidoDireccion" placeholder="Dirección de envío o..." style="margin-bottom:0;">
+        <button onclick="obtenerUbicacion()" title="Usar mi ubicación actual" style="padding: 12px;"><i class="ri-map-pin-user-line"></i></button>
+      </div>
+      <input type="text" id="pedidoViaje" placeholder="¿Necesitas un viaje personal? (Opcional)">
+      <input type="text" id="pedidoLugarViaje" placeholder="Destino del viaje (Opcional)">
+      <button onclick="submitPedido()"><i class="ri-whatsapp-line"></i> Enviar Pedido por WhatsApp</button>
+    </div>
+  </div>
+
+  <div id="modalMotoDetalle" class="modal">
+    <div class="modal-content" id="contenidoModalMoto"></div>
+  </div>
+
+  <div id="modalAyuda" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeAyuda()">×</span>
+      <div class="section-header">
+        <i class="ri-lightbulb-flash-line"></i>
+        <h2>Guía Rápida y Tips</h2>
+      </div>
+      <ul style="padding-left: 20px; list-style-type: '💡 ';">
+        <li>Haz clic en una moto para ver su perfil completo.</li>
+        <li>Toca la estrella para agregar o quitar una moto de tu lista de favoritos.</li>
+        <li>Visita la sección de <b>Estadísticas</b> para ver tu actividad detallada.</li>
+        <li>Cambia entre <b>modo oscuro y claro</b> con el icono de la luna.</li>
+      </ul>
+    </div>
+  </div>
+  <div id="toast" style="display:none"></div>
+
+<script>
+/* -------  Constants and State Variables  -------- */
+const motos = [
+  { nombre: "Moto Mandado Maycol", numero: "85435753", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "https://i.pinimg.com/736x/ce/8f/58/ce8f58272edab18d6cb15dd2481ad92c.jpg" },
+  { nombre: "Moto Mandados Rapiditos", numero: "84519213", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandado Express", numero: "58863363", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandado Ponce", numero: "57400032", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandados Gutierrez", numero: "89322149", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandados Daniel", numero: "78623620", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Compras en Ecocell"], logo: "https://i.pinimg.com/736x/ce/5a/09/ce5a09b3f8d183653b770a0bc79ed236.jpg" },
+  { nombre: "Moto Mandado Ariel", numero: "55043628", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandados Rodrigues", numero: "78665019", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Compras en Ecocell"], logo: "https://i.pinimg.com/736x/8e/65/e1/8e65e1948334da7f81a3904dbdbf7c7b.jpg" },
+  { nombre: "Moto Express Zamora", numero: "85377895", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandado J y J", numero: "83998959", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandados Montes", numero: "83308620", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "" },
+  { nombre: "Delivery El Pollo", numero: "83326359", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandado Picado", numero: "84083636", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandado La Bendicion", numero: "58508736", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandados Rodas", numero: "88581758", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "https://i.pinimg.com/736x/a2/f6/28/a2f62893bf7e/914309f7e6ddf139a7cf.jpg" },
+  { nombre: "Moto Mandados Gonzales", numero: "57856808", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandados Jin", numero: "84010719", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "" },
+  { nombre: "Delivery Nany", numero: "87045750", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandados el Balazo", numero: "82131040", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "https://i.pinimg.com/736x/a0/f7/eb/a0f7ebf1c4b7a105bd0dea9312d6d895.jpg" },
+  { nombre: "Mandados Centeno", numero: "88551093", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "" },
+  { nombre: "Moto Mandados Rivera", numero: "77778486", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "https://i.pinimg.com/736x/71/5b/bf/715bbff964a573e50f615a76a500e4ad.jpg" },
+  { nombre: "Moto Mandados el Flaco", numero: "87519662", servicios: ["Verduras","Medicinas","Supermercado","Retiros","Viajes","Compras en Ecocell"], logo: "https://i.pinimg.com/736x/fb/5f/9f/fb5f9f9c3d907d4f80dd7bd1e2627545.jpg" }
+];
+const negocios = ["Ecocell", "Farmacia Dariken", "Farmacia Ayanna", "Recreativo el abuelo", "Hotelito el esfuerzo", "Avenida del café", "Cofy Play", "Apetitos", "Sazón del occidente", "Restaurante yoshuar", "Comedor el grillo", "La terraza", "Otro"];
+const defaultLogo = 'https://i.pinimg.com/736x/f2/a3/1d/f2a31d6128895897f7960de95bed8596.jpg';
+
+let ratings, favoritos, pedidos;
+let selectedMotoIndex = null;
+let coordenadasPedido = null;
+
+/* -------  App Initialization  -------- */
+document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem("darkmode") === "1") document.body.classList.add("dark");
+    loadDataFromStorage();
+    loadProfile();
+    populateFilters();
+    mostrarSeccion("inicio");
+    setTimeout(mostrarRandomMotoCard, 2000); 
+});
+
+function loadDataFromStorage() {
+    ratings = JSON.parse(localStorage.getItem('ratings')) || {};
+    favoritos = Array.isArray(JSON.parse(localStorage.getItem('favoritos'))) ? JSON.parse(localStorage.getItem('favoritos')) : [];
+    pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
+}
+
+/* -------  UI & Navigation  -------- */
+function toggleSidebar() {
+  document.getElementById("mySidebar").classList.toggle("open");
+  document.getElementById("mainContent").classList.toggle("shift");
+}
+
+window.onclick = e => {
+  const sidebar = document.getElementById("mySidebar");
+  if (sidebar.classList.contains("open") && !sidebar.contains(e.target) && !e.target.closest('#menuBtn')) {
+    toggleSidebar();
+  }
+}
+
+function mostrarSeccion(id) {
+    document.querySelectorAll("main section").forEach(sec => sec.classList.add("hidden"));
+    const section = document.getElementById(id);
+    if(section) section.classList.remove("hidden");
+    
+    document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
+    const activeLink = document.getElementById("sb_" + id);
+    if (activeLink) activeLink.classList.add("active");
+
+    const sectionHandlers = {
+        'inicio': actualizarDashboard,
+        'motos': mostrarMotos,
+        'favoritos': mostrarFavoritos,
+        'historial': mostrarHistorialCompleto,
+        'estadisticas': mostrarEstadisticasDetalladas
+    };
+    if (sectionHandlers[id]) sectionHandlers[id]();
+
+    if (document.getElementById("mySidebar").classList.contains("open")) {
+        toggleSidebar();
+    }
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("darkmode", document.body.classList.contains("dark") ? "1" : "0");
+}
+
+/* -------  Dashboard and Dynamic Content  -------- */
+function mostrarSaludo() {
+  const contenedor = document.getElementById('saludo-container');
+  const hora = new Date().getHours();
+  let saludo, icono;
+  if (hora >= 5 && hora < 12) {
+    saludo = 'Buenos días';
+    icono = 'ri-sun-line';
+  } else if (hora >= 12 && hora < 19) {
+    saludo = 'Buenas tardes';
+    icono = 'ri-sun-cloudy-line';
+  } else {
+    saludo = 'Buenas noches';
+    icono = 'ri-moon-clear-line';
+  }
+  const nombre = (localStorage.getItem("nombrePerfil") || '').split(' ')[0];
+  contenedor.innerHTML = `<i class="${icono}"></i> ${saludo}<span>${nombre ? ', ' + nombre : ''}</span>`;
+}
+
+function actualizarDashboard() {
+    const conteo = pedidos.reduce((acc, p) => { acc[p.moto] = (acc[p.moto] || 0) + 1; return acc; }, {});
+    const motoMasPedida = Object.keys(conteo).sort((a,b) => conteo[b] - conteo[a])[0] || '-';
+    document.getElementById('dashboard-stats').innerHTML = `
+        <h4><i class="ri-pie-chart-line"></i> Tu Actividad</h4>
+        <div class="stat-item"><span>Pedidos Totales</span> <span>${pedidos.length}</span></div>
+        <div class="stat-item"><span>Motos Favoritas</span> <span>${favoritos.length}</span></div>
+        <div class="stat-item"><span>Moto Más Usada</span> <span>${motoMasPedida}</span></div>`;
+
+    const favContainer = document.getElementById('dashboard-favorites');
+    let favHTML = '<h4><i class="ri-star-line"></i> Favoritos Rápidos</h4>';
+    if(favoritos.length > 0) {
+        favoritos.slice(0, 3).forEach(i => {
+            const moto = motos[i];
+            if(moto) favHTML += `
+                <div class="list-item" onclick="abrirMotoDetalle(${i})">
+                    <img src="${moto.logo || defaultLogo}" onerror="this.onerror=null;this.src='${defaultLogo}';" alt="${moto.nombre}">
+                    <div><strong>${moto.nombre}</strong></div>
+                </div>`;
+        });
+        if(favoritos.length > 3) favHTML += `<button class="secondary" style="width:100%; margin-top: 15px;" onclick="mostrarSeccion('favoritos')">Ver Todos</button>`;
+    } else {
+        favHTML += '<p style="color:var(--text-secondary); font-size:14px;">Aún no tienes favoritos.</p>';
+    }
+    favContainer.innerHTML = favHTML;
+
+    const histContainer = document.getElementById('dashboard-history');
+    let histHTML = '<h4><i class="ri-history-line"></i> Historial Reciente</h4>';
+    if(pedidos.length > 0) {
+        pedidos.slice(-3).reverse().forEach(p => {
+            histHTML += `
+                <div class="list-item">
+                    <i class="ri-motorbike-line"></i>
+                    <div><strong>${p.moto}</strong><br><small>${p.fecha}</small></div>
+                </div>`;
+        });
+         if(pedidos.length > 3) histHTML += `<button class="secondary" style="width:100%; margin-top: 15px;" onclick="mostrarSeccion('historial')">Ver Completo</button>`;
+    } else {
+        histHTML += '<p style="color:var(--text-secondary); font-size:14px;">No has realizado pedidos.</p>';
+    }
+    histContainer.innerHTML = histHTML;
+    mostrarSaludo();
+}
+
+function populateFilters() {
+    const allServices = [...new Set(motos.flatMap(m => m.servicios))];
+    const serviceFilter = document.getElementById('filtroServicio');
+    serviceFilter.innerHTML = '<option value="">Todos los servicios</option>';
+    allServices.sort().forEach(s => serviceFilter.innerHTML += `<option value="${s}">${s}</option>`);
+    const businessSelect = document.getElementById('pedidoDondeComprar');
+    businessSelect.innerHTML = '<option value="" disabled selected>- Selecciona el negocio de compra -</option>';
+    negocios.forEach(n => businessSelect.innerHTML += `<option value="${n}">${n}</option>`);
+}
+
+function mostrarMotos() {
+  const cont = document.getElementById("listaMotos");
+  cont.innerHTML = motos.map((moto, i) => `
+      <div class="card" onclick="abrirMotoDetalle(${i})">
+        <span class="favorito ${favoritos.includes(i) ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorito(${i}, this)" title="Añadir a Favoritos"><i class="ri-star-fill"></i></span>
+        <div style="display: flex; align-items: center; gap: 20px;">
+          <img src="${moto.logo || defaultLogo}" onerror="this.onerror=null;this.src='${defaultLogo}';" style="width:60px;height:60px;border-radius:50%;object-fit:cover;">
+          <div style="flex-grow:1;">
+            <h3 style="margin:0;">${moto.nombre}</h3>
+            <p style="font-size: 14px; color: var(--text-secondary); margin: 5px 0 15px;">${moto.servicios.slice(0, 4).join(' • ')}</p>
+            <div style="display:flex; gap:10px; flex-wrap: wrap;">
+              <button onclick="event.stopPropagation();openPedido(${i})" title="Realizar Pedido"><i class="ri-shopping-bag-3-line"></i> Pedir</button>
+              <button class="secondary" onclick="event.stopPropagation();llamarMoto(${i})" title="Llamar"><i class="ri-phone-line"></i></button>
+              <button class="secondary" onclick="event.stopPropagation();compartirMoto(${i})" title="Compartir"><i class="ri-share-line"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>`).join('');
+}
+
+/* -------  Search and Filtering  -------- */
+function buscarAvanzado() {
+  const texto = document.getElementById("motoSearch").value.toLowerCase();
+  const servicio = document.getElementById("filtroServicio").value;
+  const soloFav = buscarAvanzado.soloFav || false;
+  document.querySelectorAll("#listaMotos .card").forEach((card, i) => {
+    const moto = motos[i];
+    let visible = true;
+    if (texto && !(moto.nombre.toLowerCase().includes(texto) || moto.servicios.join(" ").toLowerCase().includes(texto))) visible = false;
+    if (servicio && !moto.servicios.includes(servicio)) visible = false;
+    if (soloFav && !favoritos.includes(i)) visible = false;
+    card.style.display = visible ? "block" : "none";
+  });
+}
+function filtrarPorServicio() { buscarAvanzado(); }
+function filtrarSoloFavoritos() {
+  buscarAvanzado.soloFav = !(buscarAvanzado.soloFav);
+  const btn = document.querySelector('button.secondary[onclick="filtrarSoloFavoritos()"]');
+  btn.classList.toggle('active', buscarAvanzado.soloFav);
+  if(buscarAvanzado.soloFav) {
+    btn.style.backgroundColor = 'var(--primary-color)';
+    btn.style.color = document.body.classList.contains('dark') ? '#121826' : '#fff';
+  } else {
+    btn.style.backgroundColor = '';
+    btn.style.color = '';
+  }
+  buscarAvanzado();
+}
+
+/* -------  Core App Logic (Favorites, Orders, History)  -------- */
+function toggleFavorito(i, el) {
+  const favIndex = favoritos.indexOf(i);
+  if (favIndex > -1) {
+    favoritos.splice(favIndex, 1);
+    toast(`${motos[i].nombre} quitado de favoritos.`);
+  } else {
+    favoritos.push(i);
+    toast(`${motos[i].nombre} añadido a favoritos.`);
+  }
+  localStorage.setItem('favoritos', JSON.stringify(favoritos));
+  el.classList.toggle('active');
+  if (!document.getElementById('favoritos').classList.contains('hidden')) mostrarFavoritos();
+}
+function mostrarFavoritos() {
+  const cont = document.getElementById("listaFavoritos");
+  if (favoritos.length === 0) {
+    cont.innerHTML = `<div class="card"><p>Aún no tienes motos favoritas. ¡Toca la estrella ⭐ en cualquier moto para agregarla aquí!</p></div>`;
+    return;
+  }
+  cont.innerHTML = favoritos.map(i => {
+    const m = motos[i];
+    return m ? `<div class="card" onclick="abrirMotoDetalle(${i})"><h3><i class="ri-star-fill" style="color:#ffc107"></i> ${m.nombre}</h3><p>${m.servicios.join(', ')}</p></div>` : '';
+  }).join('');
+}
+function openPedido(index) {
+  selectedMotoIndex = index;
+  document.getElementById("modalPedido").style.display = "block";
+}
+function closeModal() { document.getElementById("modalPedido").style.display = "none"; }
+function obtenerUbicacion() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        coordenadasPedido = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        document.getElementById("pedidoDireccion").value = `Ubicación GPS Obtenida`;
+        toast("¡Ubicación capturada!");
+      },
+      () => toast("No se pudo obtener la ubicación.")
+    );
+  } else toast("Geolocalización no es soportada.");
+}
+function submitPedido() {
+  const nombre = document.getElementById("pedidoNombre").value;
+  const apellido = document.getElementById("pedidoApellido").value;
+  let direccionEnvio = document.getElementById("pedidoDireccion").value;
+  if (coordenadasPedido) {
+    direccionEnvio = `https://www.google.com/maps?q=${coordenadasPedido.lat},${coordenadasPedido.lng}`;
+  }
+  const moto = motos[selectedMotoIndex];
+  const appLink = 'https://play.google.com/store/apps/details?id=motos.manda2pan';
+  
+  const mensaje = `¡Hola ${moto.nombre}! Quisiera hacer un pedido.\n\n` +
+    `*Detalles del Pedido:*\n` +
+    `-------------------------------------\n` +
+    `👤 *Cliente:* ${nombre} ${apellido}\n` +
+    `🛒 *Pedido:* ${document.getElementById("pedidoQue").value}\n` +
+    `🏪 *Comprar en:* ${document.getElementById("pedidoDondeComprar").value}\n` +
+    `📍 *Dirección de envío:* ${direccionEnvio}\n` +
+    (document.getElementById("pedidoViaje").value ? `✈️ *Viaje personal:* ${document.getElementById("pedidoViaje").value}\n` : '') +
+    (document.getElementById("pedidoLugarViaje").value ? `🗺️ *Destino del viaje:* ${document.getElementById("pedidoLugarViaje").value}\n` : '') +
+    `-------------------------------------\n\n` +
+    `¡Quedo a la espera de tu confirmación!\n\n` +
+    `---\n` +
+    `_Enviado desde la app Motos Mandados en Pantasma PRO_\n${appLink}`;
+
+  window.open(`https://wa.me/505${moto.numero}?text=${encodeURIComponent(mensaje)}`, '_blank');
+  
+  pedidos.push({ moto: moto.nombre, fecha: new Date().toLocaleString() });
+  localStorage.setItem('pedidos', JSON.stringify(pedidos));
+  closeModal();
+  toast("Redirigiendo a WhatsApp...");
+}
+function mostrarHistorialCompleto(){
+    const cont = document.getElementById("listaHistorial");
+    if(pedidos.length === 0){
+        cont.innerHTML = "<div class='card'><p>No has realizado pedidos aún.</p></div>";
+        return;
+    }
+    cont.innerHTML = pedidos.map(p => `<div class="card"><strong>${p.moto}</strong><br><small>${p.fecha}</small></div>`).reverse().join('');
+}
+function exportarHistorial(){
+    if (!pedidos.length) return toast("No hay historial.");
+    let text = "Mi historial de pedidos:\n" + pedidos.map(p => `- ${p.moto} (${p.fecha})`).join('\n');
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank');
+}
+function limpiarHistorial(){
+    if(confirm("¿Borrar todo tu historial de pedidos?")){
+        pedidos = [];
+        localStorage.removeItem('pedidos');
+        mostrarHistorialCompleto();
+        toast("Historial eliminado.");
+    }
+}
+function mostrarEstadisticasDetalladas(){
+    const conteo = pedidos.reduce((acc, p) => { acc[p.moto] = (acc[p.moto] || 0) + 1; return acc; }, {});
+    const motoMasPedida = Object.keys(conteo).sort((a,b) => conteo[b] - conteo[a])[0] || '-';
+    document.getElementById("estadisticasPRO").innerHTML = `
+        <div class="card"><h3>Total de Pedidos</h3><p style="font-size: 24px; font-weight: bold; color: var(--primary-color);">${pedidos.length}</p></div>
+        <div class="card"><h3>Total de Favoritos</h3><p style="font-size: 24px; font-weight: bold; color: var(--primary-color);">${favoritos.length}</p></div>
+        <div class="card"><h3>Moto Más Solicitada</h3><p style="font-size: 24px; font-weight: bold; color: var(--primary-color);">${motoMasPedida}</p></div>
+    `;
+}
+
+/* -------  Profile Management  -------- */
+function loadProfile() {
+    const nombre = localStorage.getItem("nombrePerfil");
+    if(nombre) {
+        document.getElementById("nombrePerfil").textContent = nombre;
+        const [nombreVal, apellidoVal] = nombre.split(' ');
+        document.getElementById("nombre").value = nombreVal || '';
+        document.getElementById("apellido").value = apellidoVal || '';
+    }
+    const logo = localStorage.getItem("logoPerfil");
+    if(logo) document.getElementById("logoPerfil").src = logo;
+}
+function guardarPerfil() {
+  const nombreCompleto = `${document.getElementById("nombre").value} ${document.getElementById("apellido").value}`.trim();
+  localStorage.setItem("nombrePerfil", nombreCompleto);
+  document.getElementById("nombrePerfil").textContent = nombreCompleto;
+  const foto = document.getElementById("fotoPerfilInput").files[0];
+  if (foto) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById("logoPerfil").src = e.target.result;
+      localStorage.setItem("logoPerfil", e.target.result);
+    };
+    reader.readAsDataURL(foto);
+  }
+  mostrarSaludo();
+  toast("Perfil guardado.");
+}
+function cambiarFondo() { document.documentElement.style.setProperty('--primary-color', document.getElementById("colorFondo").value); }
+function cambiarFuente() { document.body.style.fontFamily = `${document.getElementById("fuente").value}, sans-serif`; }
+
+/* -------  Modals and Helpers  -------- */
+function llamarMoto(index) { window.location.href = `tel:+505${motos[index].numero}`; }
+function compartirMoto(index) {
+    const moto = motos[index];
+    const appLink = 'https://play.google.com/store/apps/details?id=motos.manda2pan';
+    const mensaje = `¡Te recomiendo este Moto Mandado!\n\n🛵 *Nombre:* ${moto.nombre}\n🛠️ *Servicios:* ${moto.servicios.join(', ')}\n📞 *Contacto:* ${moto.numero}\n\nEncuéntralo y a muchos más en la app Motos Mandados PRO:\n${appLink}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+    window.open(whatsappUrl, '_blank');
+}
+function abrirMotoDetalle(i) {
+  const m = motos[i];
+  document.getElementById('contenidoModalMoto').innerHTML = `
+    <span class="close-modal" onclick="closeMotoDetalle()">×</span>
+    <div style="text-align:center;">
+        <img src="${m.logo || defaultLogo}" onerror="this.onerror=null;this.src='${defaultLogo}';" style="width:100px;height:100px;border-radius:50%;margin-bottom:15px;box-shadow: 0 0 0 4px var(--background-sidebar), 0 0 0 6px var(--primary-color);">
+        <h2 style="margin-top:0;">${m.nombre}</h2>
+        <p style="color: var(--text-secondary);">Servicios: ${m.servicios.join(', ')}</p>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
+          <button onclick="openPedido(${i})"><i class="ri-shopping-bag-3-line"></i> Pedir</button>
+          <button onclick="llamarMoto(${i})"><i class="ri-phone-line"></i> Llamar</button>
+        </div>
+    </div>`;
+  document.getElementById('modalMotoDetalle').style.display = 'block';
+}
+function mostrarRandomMotoCard() {
+    const i = Math.floor(Math.random() * motos.length);
+    const moto = motos[i];
+    const card = document.getElementById('randomMotoCard');
+    
+    card.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="${moto.logo || defaultLogo}" onerror="this.onerror=null;this.src='${defaultLogo}';" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+            <div style="flex-grow: 1;">
+                <strong style="color: var(--primary-color);">Sugerencia: ${moto.nombre}</strong>
+                <p style="font-size: 14px; color: var(--text-secondary); margin: 4px 0 0;">${moto.servicios.slice(0, 3).join(' • ')}</p>
+            </div>
+        </div>
+    `;
+    card.onclick = () => abrirMotoDetalle(i);
+    card.style.display = 'block';
+
+    setTimeout(() => {
+        card.style.display = 'none';
+    }, 7000); 
+}
+function closeMotoDetalle() { document.getElementById('modalMotoDetalle').style.display = 'none'; }
+function mostrarAyuda() { document.getElementById('modalAyuda').style.display='block'; }
+function closeAyuda() { document.getElementById('modalAyuda').style.display='none'; }
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.innerHTML = msg; t.style.display="block";
+  setTimeout(() => { t.style.display="none"; }, 2900);
+}
+function abrirFabMenu() {
+  document.getElementById("fabMenu").style.display = "flex";
+  document.getElementById("fab").style.display = "none";
+}
+function cerrarFabMenu() {
+  document.getElementById("fabMenu").style.display = "none";
+  document.getElementById("fab").style.display = "flex";
+}
+function enviarMotoDirecto() {
+  const mensaje = `Hola, quisiera sugerir un nuevo Moto Mandado:\n\n*Nombre:* ${document.getElementById("nombreMoto").value}\n*WhatsApp:* ${document.getElementById("numeroMoto").value}\n*Servicios:* ${document.getElementById("serviciosMoto").value}`;
+  window.open(`https://wa.me/50578997126?text=${encodeURIComponent(mensaje)}`, '_blank');
+}
+</script>
+</body>
+</html>
